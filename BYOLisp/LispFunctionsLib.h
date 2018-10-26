@@ -11,24 +11,15 @@
     lval_del(args); \
     return err; \
  }
-#define LARGNUM(arg,count, cond, fmt, ...) \
-    if(count != cond) { \
-        lval* err = lval_err(fmt, ##__VA_ARGS__); \
-        lval_del(arg);    \
-        return err;\
-    }
-#define ISEMPTY(arg, count, fmt, ...)\
-    if(count == 0) { \
-        lval* err = lval_err(fmt, ##__VA_ARGS__); \
-        lval_del(arg);    \
-        return err;\
-    }
-#define LTYPE(arg, type, cond, fmt, ...) \
-    if(type != cond) { \
-        lval* err = lval_err(fmt, ##__VA_ARGS__); \
-        lval_del(arg);    \
-        return err;\
-    }
+#define LARGNUM(func,arg, expected) \
+    LASSERT(arg, arg->count == expected, "Function %s passed incorrect number of arguments.\
+ Expected %i, got %i.", func, expected, arg->count);
+#define ISEMPTY(func, arg)\
+    LASSERT(arg, arg->count != 0, "Function %s passed {}!", func);
+#define LTYPE(func, arg, cond) \
+    LASSERT(arg, arg->type == cond, "Function %s passed wrong type. Expected\
+%s, got %s", func, cond, arg->type);
+
 
 
 // Function declaration list

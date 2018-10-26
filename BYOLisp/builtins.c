@@ -24,7 +24,7 @@ lval* builtin(lenv* e, lval* a, char* func) {
 }
 
 lval* builtin_cons(lenv* e, lval* a) {
-    LARGNUM(a, a->count,2, "Function \"cons\" passed wrong number of arguments");
+    LARGNUM("cons", a, 2);
     LASSERT(a, a->cell[0]->type == LVAL_NUM || a->cell[0]->type == LVAL_FP_NUM,
            "Value is not integer/float. Got %s instead.", ltype_name(a->cell[0]->type));
     LASSERT(a, a->cell[1]->type == LVAL_QEXPR,
@@ -238,14 +238,12 @@ lval* builtin_op(lenv* e, lval* a, char* op) {
 }
 
 lval* builtin_head(lenv* e, lval* a) {
-  LARGNUM(a, a->count, 1,
-    "Function 'head' passed too many arguments."
-    "Expected %i, got %i", 1, a->count);
+  LARGNUM("head", a, 1);
+
   LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
     "Function 'head' passed incorrect type for argument 0. Got %s, expected %s",
     ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR));
-  ISEMPTY(a,a->count,
-    "Function 'head' passed {}!");
+  ISEMPTY("head", a);
 
   lval* v = lval_take(a, 0);
   while (v->count > 1) { lval_del(lval_pop(v, 1)); }
@@ -253,14 +251,11 @@ lval* builtin_head(lenv* e, lval* a) {
 }
 
 lval* builtin_tail(lenv* e, lval* a) {
-  LARGNUM(a, a->count,1,
-   "Function 'head' passed too many arguments."
-    "Expected %i, got %i", 1, a->count);
+  LARGNUM("tail", a, 1);
   LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
     "Function 'tail' passed incorrect type for argument 0. Got %s, expected %s",
     ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR));
-  ISEMPTY(a,a->count,
-    "Function 'tail' passed {}!");
+  ISEMPTY("tail", a);
 
   lval* v = lval_take(a, 0);
   lval_del(lval_pop(v, 0));
@@ -272,8 +267,7 @@ lval* builtin_list(lenv* e,lval* a) {
   return a;
 }
 lval* builtin_eval(lenv* e, lval* a) {
-  LARGNUM(a, a->count,1,
-    "Function 'eval' passed too many arguments!");
+  LARGNUM("eval", a,1);
   LASSERT(a, a->cell[0]->type == LVAL_QEXPR,
     "Function 'eval' passed incorrect type for argument 0. Got %s, expected %s",
     ltype_name(a->cell[0]->type), ltype_name(LVAL_QEXPR));
