@@ -26,3 +26,6 @@ lval* builtin_cons(lenv* e,lval* a);
 lval* builtin_print_vars(lenv* e, lval* a);
 lval* builtin(lenv* e,lval* a, char* func);
 lval* builtin_exit(lenv* e, lval* a);
+lval* builtin_lambda(lenv* e, lval* a);
+lval* builtin_var(lenv* e, lval* a, char* func);
+lval* builtin_put(lenv* e, lval* a);

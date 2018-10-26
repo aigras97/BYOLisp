@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
       mpc_err_print(r.error);
       mpc_err_delete(r.error);
     }
-    if(x->type == LVAL_FUN && x->fun == builtin_exit){
+    if(x->type == LVAL_FUN && x->builtin == builtin_exit){
          lval_del(x);
          free(input);
          lenv_del(e);

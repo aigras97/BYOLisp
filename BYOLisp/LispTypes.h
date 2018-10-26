@@ -19,13 +19,17 @@ struct lval {
         char* err;
     };
     char* sym;
-    lbuiltin fun;
+    lbuiltin builtin;
+    lenv* env;
+    lval* formals;
+    lval* body;
 
     int count;
     lval** cell;
 };
 
 struct lenv {
+    lenv* par;
     int count;
     char** syms;
     lval** vals;

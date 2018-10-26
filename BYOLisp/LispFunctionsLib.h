@@ -53,9 +53,10 @@ lval* lval_push(lval* v, lval* x, int i);
 lval* lval_take(lval* v, int i);
 lval* lval_copy(lval* v);
 lval* lval_join(lval* x, lval* y);
-
-
-
+lval* lval_lambda(lval* formals, lval* body);
+lenv* lenv_copy(lenv* e);
+void lenv_def(lenv* e, lval* k, lval* v);
+lval* lval_call(lenv* e, lval* f, lval* a);
 
 
 

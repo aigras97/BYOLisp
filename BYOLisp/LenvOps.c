@@ -37,6 +37,9 @@ void lenv_add_builtins(lenv* e) {
   lenv_add_builtin(e, "def",  builtin_def);
   lenv_add_builtin(e, "var", builtin_print_vars);
   lenv_add_builtin(e, "exit", builtin_exit);
+
+  lenv_add_builtin(e, "\\", builtin_lambda);
+  lenv_add_builtin(e, "=",   builtin_put);
     return;
 }
 
@@ -44,6 +47,7 @@ void lenv_add_builtins(lenv* e) {
 
 lenv* lenv_new(void) {
   lenv* e = malloc(sizeof(lenv));
+  e->par = NULL;
   e->count = 0;
   e->syms = NULL;
   e->vals = NULL;
@@ -51,7 +55,7 @@ lenv* lenv_new(void) {
 }
 char* lenv_get_name(lenv* e, lval* v) {
     for (int i = 0; i < e->count; i++) {
-        if ( e->vals[i]->fun == v->fun) {
+        if ( e->vals[i]->builtin == v->builtin) {
           return e->syms[i];
         }
     }
@@ -69,7 +73,12 @@ lval* lenv_get(lenv* e, lval* k) {
     }
   }
   /* If no symbol found return error */
-  return lval_err("Unbound Symbol '%s'", k->sym);
+   /* If no symbol check in parent otherwise error */
+  if (e->par) {
+    return lenv_get(e->par, k);
+  } else {
+    return lval_err("Unbound Symbol '%s'", k->sym);
+  }
 }
 
 lval* lenv_put(lenv* e, lval* k, lval* v) {
@@ -107,4 +116,25 @@ void lenv_del(lenv* e) {
   free(e->syms);
   free(e->vals);
   free(e);
+}
+
+lenv* lenv_copy(lenv* e) {
+  lenv* n = malloc(sizeof(lenv));
+  n->par = e->par;
+  n->count = e->count;
+  n->syms = malloc(sizeof(char*) * n->count);
+  n->vals = malloc(sizeof(lval*) * n->count);
+  for (int i = 0; i < e->count; i++) {
+    n->syms[i] = malloc(strlen(e->syms[i]) + 1);
+    strcpy(n->syms[i], e->syms[i]);
+    n->vals[i] = lval_copy(e->vals[i]);
+  }
+  return n;
+}
+
+void lenv_def(lenv* e, lval* k, lval* v) {
+  /* Iterate till e has no parent */
+  while (e->par) { e = e->par; }
+  /* Put value in e */
+  lenv_put(e, k, v);
 }
