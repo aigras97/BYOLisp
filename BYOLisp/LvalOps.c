@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "mpc.h"
 #include "LispTypes.h"
 #include "builtins.h"
@@ -78,6 +79,14 @@ lval* lval_qexpr(void) {
   return v;
 }
 
+lval* lval_bool(void) {
+    lval* v = malloc(sizeof(lval));
+    v->type = LVAL_BOOL;
+    v->lbool = 0;
+    v->cell = NULL;
+    v->count = 0;
+    return v;
+}
 void lval_del(lval* v) {
 
   switch (v->type) {
@@ -104,6 +113,7 @@ void lval_del(lval* v) {
       /* Also free the memory allocated to contain the pointers */
       free(v->cell);
     break;
+    case LVAL_BOOL: break;
   }
 
   /* Free the memory allocated for the "lval" struct itself */
@@ -183,6 +193,7 @@ void lval_print(lenv* e, lval* v) {
     case LVAL_SYM:   printf("%s", v->sym); break;
     case LVAL_SEXPR: lval_expr_print(e, v, '(', ')'); break;
     case LVAL_QEXPR: lval_expr_print(e, v,'{', '}'); break;
+    case LVAL_BOOL: if(v->lbool) printf("True"); else printf("False"); break;
   }
 }
 
@@ -319,6 +330,7 @@ lval* lval_copy(lval* v) {
                 x->cell[i] = lval_copy(v->cell[i]);
             }
         break;
+        case LVAL_BOOL: x->lbool = v->lbool; break;
   }
 
   return x;
@@ -361,6 +373,7 @@ char* ltype_name(int t) {
     case LVAL_SYM: return "Symbol";
     case LVAL_SEXPR: return "S-Expression";
     case LVAL_QEXPR: return "Q-Expression";
+    case LVAL_BOOL: return "Boolean";
     default: return "Unknown";
   }
 }

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "mpc.h"
 #include "LispTypes.h"
 #include "builtins.h"

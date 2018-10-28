@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <stdbool.h>
 #include "mpc.h"
 #include "LispTypes.h"
 #include "builtins.h"
@@ -41,6 +42,12 @@ void lenv_add_builtins(lenv* e) {
   lenv_add_builtin(e, "\\", builtin_lambda);
   lenv_add_builtin(e, "=",   builtin_put);
   lenv_add_builtin(e, "fun", builtin_fun);
+
+  /*Comparison operators */
+  lenv_add_builtin(e, ">", builtin_gt);
+  lenv_add_builtin(e, "<",  builtin_lt);
+  lenv_add_builtin(e, "==", builtin_eq);
+
     return;
 }
 

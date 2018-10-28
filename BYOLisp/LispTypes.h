@@ -17,6 +17,7 @@ struct lval {
         double fp_num;
         long num;
         char* err;
+        bool lbool;
     };
     char* sym;
     lbuiltin builtin;
@@ -35,4 +36,4 @@ struct lenv {
     lval** vals;
 };
 
-enum {LVAL_NUM, LVAL_ERR, LVAL_FP_NUM, LVAL_SYM, LVAL_SEXPR, LVAL_QEXPR,LVAL_FUN};
+enum {LVAL_NUM, LVAL_ERR, LVAL_FP_NUM, LVAL_SYM, LVAL_SEXPR, LVAL_QEXPR,LVAL_FUN, LVAL_BOOL};

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <math.h>
 #include "mpc.h"
 #include "LispTypes.h"
@@ -356,4 +357,103 @@ lval* builtin_fun(lenv* e, lval* a) {
     f->count++;
     lval_push(f, v, 0);
     return builtin_def(e, f);
+}
+
+lval* builtin_ord(lenv* e, lval* a, char* func) {
+    LARGNUM(func, a, 2);
+    LASSERT(a, a->cell[0]->type == LVAL_NUM || a->cell[0]->type == LVAL_FP_NUM, "Function"
+    " %s expected %s or %s, got %s.", func,ltype_name(LVAL_NUM),
+    ltype_name(LVAL_FP_NUM), ltype_name(a->cell[0]->type ));
+    LASSERT(a, a->cell[1]->type == LVAL_NUM || a->cell[1]->type == LVAL_FP_NUM, "Function"
+    " %s expected %s or %s, got %s.", func,ltype_name(LVAL_NUM),
+    ltype_name(LVAL_FP_NUM), ltype_name(a->cell[1]->type ));
+    if((a->cell[0]->type != a->cell[1]->type) && a->cell[0]->type == LVAL_FP_NUM) {
+        a->cell[1]->fp_num = (double) a->cell[1]->num;
+        a->cell[1]->type = LVAL_FP_NUM;
+    }
+    else if((a->cell[0]->type != a->cell[1]->type) && a->cell[0]->type == LVAL_NUM) {
+        a->cell[0]->fp_num = (double) a->cell[0]->num;
+        a->cell[0]->type = LVAL_FP_NUM;
+    }
+
+    if(a->cell[0]->type == LVAL_NUM) {
+        if(strcmp(func, ">") == 0) {
+            lval* result = lval_bool();
+            if(a->cell[0]->num > a->cell[1]->num) {
+                result->lbool = true;
+                return result;
+            }
+            else {
+                result->lbool = false;
+                return result;
+            }
+        }
+        if(strcmp(func, "<") == 0) {
+            lval* result = lval_bool();
+            if(a->cell[0]->num < a->cell[1]->num) {
+                result->lbool = true;
+                return result;
+            }
+            else {
+                result->lbool = false;
+                return result;
+            }
+        }
+        if(strcmp(func, "==") == 0) {
+            lval* result = lval_bool();
+            if(a->cell[0]->num == a->cell[1]->num) {
+                result->lbool = true;
+                return result;
+            }
+            else {
+                result->lbool = false;
+                return result;
+            }
+        }
+    }
+    else if(a->cell[0]->type == LVAL_FP_NUM) {
+        if(strcmp(func, ">") == 0) {
+            lval* result = lval_bool();
+            if(a->cell[0]->fp_num > a->cell[1]->fp_num) {
+                result->lbool = true;
+                return result;
+            }
+            else {
+                result->lbool = false;
+                return result;
+            }
+        }
+        if(strcmp(func, "<") == 0) {
+            lval* result = lval_bool();
+            if(a->cell[0]->fp_num < a->cell[1]->fp_num) {
+                result->lbool = true;
+                return result;
+            }
+            else {
+                result->lbool = false;
+                return result;
+            }
+        }
+        if(strcmp(func, "==") == 0) {
+            lval* result = lval_bool();
+            if(a->cell[0]->fp_num == a->cell[1]->fp_num) {
+                result->lbool = true;
+                return result;
+            }
+            else {
+                result->lbool = false;
+                return result;
+            }
+        }
+    }
+}
+
+lval* builtin_gt(lenv* e, lval* a) {
+    return builtin_ord(e, a, ">");
+}
+lval* builtin_lt(lenv* e, lval* a) {
+    return builtin_ord(e, a, "<");
+}
+lval* builtin_eq(lenv* e, lval* a) {
+    return builtin_ord(e, a, "==");
 }
