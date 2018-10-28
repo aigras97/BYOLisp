@@ -336,3 +336,24 @@ lval* builtin_var(lenv* e, lval* a, char* func) {
 lval* builtin_put(lenv* e, lval* a) {
   return builtin_var(e, a, "=");
 }
+
+lval* builtin_fun(lenv* e, lval* a) {
+    LARGNUM("fun", a, 2);
+    LTYPE("fun", a->cell[0], LVAL_QEXPR);
+    LTYPE("fun", a->cell[1], LVAL_QEXPR);
+
+    //separate function name and argument list
+    lval* k = lval_pop(a, 0);
+    lval* j = lval_pop(k, 0);
+    lval* v = lval_qexpr();
+
+    v->cell = malloc(sizeof(lval*));
+    v->cell[0] = j;
+    v->count++;
+    lval* f = lval_qexpr();
+    f->cell = malloc(sizeof(lval*));
+    f->cell[0] = lval_lambda(k, a->cell[0]);
+    f->count++;
+    lval_push(f, v, 0);
+    return builtin_def(e, f);
+}

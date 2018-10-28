@@ -49,7 +49,7 @@ void lval_println(lenv* e, lval* v);
 lval* lval_eval_sexpr(lenv* e, lval* v);
 lval* lval_eval(lenv* e, lval* v);
 lval* lval_pop(lval* v, int i);
-lval* lval_push(lval* v, lval* x, int i);
+void lval_push(lval* v, lval* x, int i);
 lval* lval_take(lval* v, int i);
 lval* lval_copy(lval* v);
 lval* lval_join(lval* x, lval* y);
